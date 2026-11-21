@@ -44,7 +44,7 @@ The task is taken when these hold: assigned to the user, on its branch, the `Tak
 - The issue's outcome and acceptance are the whole deliverable. Unspecified details inside them are yours to decide (names, spacing, which helper to reuse). New features are not.
 - Anything else you notice goes in the report's *Noticed* list, one line each. Do not build it, scaffold it, or leave a flag "so it's easy to add later".
 - If the feature cannot work without an extra change, make it and say so in the report. The test is necessity, not improvement.
-- Stay inside the scope paths. When a necessary change needs a file outside them, check the tasks in progress again: if one owns that file, it is a blocker. If none does, first edit the `Taking` comment to add the file (`gh issue comment <N> --edit-last --body …`), so the next task sees it, then make the change and list the file in the report.
+- Stay inside the scope paths. When a necessary change needs a file outside them, check the tasks in progress again: if one owns that file, it is a blocker. If none does, first edit the `Taking` comment to add the file, so the next task sees it, then make the change and list the file in the report. Edit that comment by its id: `gh api repos/<owner>/<repo>/issues/<N>/comments --jq '.[] | select(.body | startswith("Taking #<N>")) | .id'`, then `gh api -X PATCH repos/<owner>/<repo>/issues/comments/<id> -f body='…'`. Never use `gh issue comment --edit-last`: it edits your latest comment, which may be a later `Ready` or `Blocked` line.
 
 ## 4. Prove it
 
