@@ -30,7 +30,7 @@ Build only the picked option. If an alternative's code already exists because yo
 
 For a decision about how something looks:
 
-1. Run the app through the project's verify skill and build each option far enough to see it.
+1. Build the options on one preview page, as the `design-options` skill does.
 2. Screenshot every option at the same size, theme and state. Name the files after the decision and option (`1-a-compact.png`, `1-b-roomy.png`).
 3. Upload them with this skill's script, run from the repo:
    `node <this skill's folder>/scripts/pr-media.mjs --folder <task branch> <png files>`

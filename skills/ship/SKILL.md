@@ -37,14 +37,14 @@ Saying ship twice is safe. Work out what is already done and continue from the f
 4. Comment once: `Taking #N | Scope: <paths>`. Set the board card to In Progress.
 5. Acceptance missing or unclear: in an attended chat, ask one question about scope and stop. In a night run, take the smallest reasonable reading and record it as a decision.
 
-The task is taken when all four hold: assigned to the user, on its branch, the `Taking` comment posted, and the card In Progress. Change no files until they do.
+The task is taken when these hold: assigned to the user, on its branch, the `Taking` comment posted, and, if the project has a board, the card In Progress (or In Review once its PR is open; never move it back). Change no files until they do.
 
 ## 3. Build exactly what it asks
 
 - The issue's outcome and acceptance are the whole deliverable. Unspecified details inside them are yours to decide (names, spacing, which helper to reuse). New features are not.
 - Anything else you notice goes in the report's *Noticed* list, one line each. Do not build it, scaffold it, or leave a flag "so it's easy to add later".
 - If the feature cannot work without an extra change, make it and say so in the report. The test is necessity, not improvement.
-- Stay inside the scope paths. When a necessary change needs a file outside them, check the tasks in progress again: if one owns that file, it is a blocker; if none does, make the change and list the file in the report.
+- Stay inside the scope paths. When a necessary change needs a file outside them, check the tasks in progress again: if one owns that file, it is a blocker. If none does, first edit the `Taking` comment to add the file (`gh issue comment <N> --edit-last --body …`), so the next task sees it, then make the change and list the file in the report.
 
 ## 4. Prove it
 
@@ -83,7 +83,7 @@ Otherwise merge. Say which in one line before landing:
 For both paths, commit only this task's files, in the repo's commit style. Fetch before landing. Never force-push, never bypass branch protection, never commit secrets. A conflict, a rejected push or a failing check is a blocker, not something to work around.
 
 **Merge**
-1. If the base moved, merge it into the task branch. Resolve conflicts only in this task's files; any other conflict is a blocker. If you resolved a conflict, or the incoming commits touch files this task changed, rerun the proof those files need before going on.
+1. If the base moved, merge it into the task branch. Resolve conflicts only in this task's files; any other conflict is a blocker. If you resolved a conflict, or the incoming commits touch this task's files or code they call or are called by, rerun the acceptance checks that depend on them before going on.
 2. Push the task branch, then merge with the project's command. Default, which works from any worktree:
    `git switch --detach origin/<base>`, `git merge --no-ff <branch> -m "Merge <branch>: <subject> (#N)"`, `git push origin HEAD:<base>`, `git switch <branch>`.
 3. Close the issue as completed, set the card to Done, and comment `Done #N | Merged: <short sha>`.

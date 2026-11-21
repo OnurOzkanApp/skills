@@ -13,6 +13,7 @@ They work in Claude Code, Codex and OpenCode, in any project.
 | `ship #12` | [ship](skills/ship/SKILL.md) | Takes the issue, builds exactly what it asks, proves it, and merges it, or opens a PR when its risk check says so. Saying it again resumes. |
 | `ship to PR #12` | [ship](skills/ship/SKILL.md) | The same, but always stops at a PR for me to merge. |
 | `council` | [council](skills/council/SKILL.md) | A reviewer from another model family reads the diff against the acceptance. Every finding gets an answer: fixed, rejected with evidence, or noted as out of scope. |
+| `options for the header` | [design-options](skills/design-options/SKILL.md) | Three real options for a visual change (or as many as I ask for), side by side in the browser I name, in the app's default theme only. It ends with the agent's own pick in one line, and I choose by looking. |
 | `night run #12 #14` | [night-run](skills/night-run/SKILL.md) | Unattended. It never stops to ask: it records each decision with its options (with screenshots for anything visual) and ends every task at a PR. |
 | `lesson` | [lesson](skills/lesson/SKILL.md) | After a correction, it puts the fix where the mistake can't come back: the code, then a check, then a rule, then a skill. |
 
@@ -28,6 +29,7 @@ issue → take → build → prove → risk check ──── risky? ──→ 
 - **Prove it.** Every acceptance line gets evidence: a test that fails without the change, real command output, or the running app. "Should work" doesn't count, and a check that didn't run is never reported as run.
 - **A second opinion where it matters.** Risky changes get a reviewer from a different model family, which sees the diff and the acceptance but not the builder's reasoning. Reviews make a change correct, not bigger. The budget is two rounds.
 - **Merge what's safe, PR what's risky.** A written rule decides, not the agent's mood: contracts, data, auth, an unresolved review finding or anything unproven always goes to a PR.
+- **Choose by looking.** A visual change comes as real options side by side, with the agent's own pick in one line. I decide by seeing them, not by reading about them.
 - **Never block overnight.** A question asked at 2 a.m. wastes the night. A recorded decision costs me one comment in the morning.
 - **Fix mistakes at the highest layer.** Agents copy the code they see, so the strongest fix is in the code itself, then a check, then a rule, and only then a skill.
 
@@ -50,6 +52,7 @@ The skills read a `## Ship` section in the project's `AGENTS.md` (or `CLAUDE.md`
 - Branch: `task/<issue>-<topic>` from the latest `origin/main`.
 - Prove: `npm test -- <file>` for the files touched; the running app through the `verify-app` skill.
 - Always PR: `src/api/schema.ts`, database migrations, anything that deletes user data.
+- Design: options in the `Light` theme only; preview pages link `dist/app.css`.
 - Merge: `--no-ff`, message `Merge <branch>: <subject> (#N)`.
 ```
 
