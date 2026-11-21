@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Take a task from issue to landed. File or pick up the issue, take it, build exactly what it asks, prove it works, get a second model's review when it is risky, then merge it or open a PR. Use when the user says "ship", "ship #N", "ship to PR", "ship it" or "ship with council". Saying it again resumes a task already under way.
+description: Take a task from issue to landed. File or pick up the issue, take it, build exactly what it asks, prove it works, get a second model's review when it is risky, then merge it or open a PR. Use when the user says "ship" (with or without an issue number), "ship to PR", "ship it" or "ship with council". Saying it again resumes a task already under way.
 ---
 
 # Ship
