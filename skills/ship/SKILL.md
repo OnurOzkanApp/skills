@@ -27,11 +27,11 @@ The project's settings win over the defaults below. A project with no `## Ship` 
 Saying ship twice is safe. Work out what is already done and continue from the first unfinished step.
 
 - **Which issue:** `#N` if given. Otherwise the number in the current branch (`task/<N>-…`). Otherwise an open issue assigned to the user that matches the request. Otherwise file a new issue from the request with the `issue` skill. The request is the authorization to file it.
-- **How far it got:** check each step's own conditions, in order, and do whatever is missing. Never skip a step because a later one looks done: a branch without the In Progress card is still not taken, and an open PR without its In Review card is still not landed. Reuse what exists (the branch, the PR) rather than creating it again.
+- **How far it got:** check each step's own conditions, in order, and do whatever is missing. Never skip a step because a later one looks done: a branch without the In Progress card is still not taken, and an open PR without its In Review card is still not landed. Reuse what exists (the branch, the PR) rather than creating it again. A task started with `take` is already taken and built: carry on from step 4, proving again whatever changed since take last showed it.
 
 ## 2. Take it
 
-1. Run `git status --short`. Uncommitted work that is not this task's, or another task under way in this checkout: stop and say so. Never stash, discard, reset or overwrite anyone's work.
+1. Run `git status --short`. Uncommitted work that is not this task's, or another task under way in this checkout: stop and say so. Changes `take` left on this task's branch are this task's. Never stash, discard, reset or overwrite anyone's work.
 2. Stop if the issue is assigned to someone else, or its scope overlaps a task in progress (the board skill says how to check).
 3. Assign the user's account if unassigned. Fetch. Switch to the issue's existing branch, or create one from the latest remote base. Never reset an existing branch.
 4. Comment once: `Taking #N | Scope: <paths>`. Set the board card to In Progress.

@@ -19,6 +19,7 @@ They work in Claude Code, Codex and OpenCode, in any project: desktop apps, webs
 | Say | Skill | What happens |
 |---|---|---|
 | `issue: …` | [issue](skills/issue/SKILL.md) | Files the work as a proper issue, checked against what already exists and what was turned down. It is scoped to the files that own it, has acceptance anyone can check, and goes on the board. It doesn't start the work. |
+| `take #12` or `take: …` | [take](skills/take/SKILL.md) | The first half of ship, with me watching. It files the issue if needed, takes it, builds it and proves it, then stops with nothing committed. I read the change, ask for more, and say `ship` when it's right. |
 | `ship #12` or `ship: …` | [ship](skills/ship/SKILL.md) | Files the issue if there isn't one, takes it, builds exactly what it asks and proves it. Then it merges, or opens a PR when its risk check says so. Saying it again resumes. |
 | `ship to PR #12` | [ship](skills/ship/SKILL.md) | The same, but always stops at a PR for me to merge. |
 | `night run #12 #14` | [night-run](skills/night-run/SKILL.md) | Unattended. It never stops to ask: it records each decision with its options (screenshots for anything visual) and ends every task at a PR. |
