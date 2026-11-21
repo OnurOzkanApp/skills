@@ -1,6 +1,6 @@
 ---
 name: council
-description: Get a second opinion from another model family before a change lands. A reviewer reads the diff against the task's acceptance, and you answer every finding with one of three things - fixed, rejected with a reason, or noted as out of scope. Use when the user says "council", "second opinion" or "have Codex/Claude review this", or when ship decides a change is risky.
+description: Get a second opinion from another model family before a change lands. A reviewer reads the diff against the task's acceptance, and you answer every finding with one of three things - fixed, rejected with a reason, or noted as out of scope. Use when the user says "council", "second opinion" or "have Codex/Claude review this", or when ship or land calls for a review.
 ---
 
 # Council
@@ -82,19 +82,21 @@ A finding that asks for more than the task is *Noted*, never fixed. Re-run the p
 - **Stop early** when the verdict is approve, or only nits and minor findings remain.
 - **Round 2 and later:** send only the new range (`git diff [previous head]..[new head]`), your answers, and the findings still open. The reviewer checks the fixes, accepts each rejection or argues it again with new evidence, and may raise new findings only in the new range.
 
-When the budget ends, a blocker or major finding is **open** unless the reviewer confirmed its fix or accepted its rejection. That includes one raised in the last round and fixed afterwards, since no one has checked the fix. List each open finding with both sides in one line each. Any open finding makes ship land the change as a PR.
+When the budget ends, a blocker or major finding is **open** unless the reviewer confirmed its fix or accepted its rejection. That includes one raised in the last round and fixed afterwards, since no one has checked the fix. List each open finding with both sides in one line each. Any open finding makes ship land the change as a PR, and makes land hold it.
 
 ## 6. Record
 
 Put this in the PR body or the report:
 
 ```
-Council: Codex GPT-6.2 Sol (medium) · 2 rounds · 5 findings: 3 fixed, 1 rejected, 1 noted · approved
+Council: Codex GPT-6.2 Sol (medium) · 2 rounds · reviewed to 9f8e7d6 · 5 findings: 3 fixed, 1 rejected, 1 noted · approved
 
 | # | Severity | Finding | Answer |
 |---|---|---|---|
 | F1 | major | file.ts:42, a closed window keeps its timer | Fixed in abc1234 |
 | F2 | minor | ... | Rejected: ... (evidence) |
 ```
+
+**Reviewed to** is the last head a reviewer saw. Commits after it are unreviewed, and `land` starts its review there.
 
 The outcome is one of: **approved**, **approved with notes**, **open findings** or **unavailable**.

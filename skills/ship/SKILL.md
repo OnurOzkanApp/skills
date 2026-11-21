@@ -94,7 +94,7 @@ For both paths, commit only this task's files, in the repo's commit style. Fetch
    ## Noticed while working, not built
    ```
 2. Set the card to In Review and comment `Ready #N | PR: <url>`.
-3. If the repo runs checks or review bots on PRs, wait for them to finish. Fix real findings, and answer wrong ones in a reply. Never merge the PR yourself.
+3. If the repo runs checks or review bots on PRs, wait for them to finish. Fix real findings, and answer wrong ones in a reply. Never merge the PR yourself: the user lands it, with `land` or on GitHub.
 
 **Blocked:** comment `Blocked #N: <reason> | Need: <decision or person>` and stop working on that issue. Do the same when the user says it is blocked.
 

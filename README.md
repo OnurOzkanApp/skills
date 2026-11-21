@@ -22,6 +22,7 @@ They work in Claude Code, Codex and OpenCode, in any project: desktop apps, webs
 | `take #12` or `take: …` | [take](skills/take/SKILL.md) | The first half of ship, with me watching. It files the issue if needed, takes it, builds it and proves it, then stops with nothing committed. I read the change, ask for more, and say `ship` when it's right. |
 | `ship #12` or `ship: …` | [ship](skills/ship/SKILL.md) | Files the issue if there isn't one, takes it, builds exactly what it asks and proves it. Then it merges, or opens a PR when its risk check says so. Saying it again resumes. |
 | `ship to PR #12` | [ship](skills/ship/SKILL.md) | The same, but always stops at a PR for me to merge. |
+| `land #12` | [land](skills/land/SKILL.md) | For a PR waiting on me. A reviewer from the other model family reviews whatever nobody has reviewed yet, the builder fixes what it finds, and the reviewer checks the fixes. Then it merges, or holds with the reasons. Saying land is my yes to merge what the review clears. |
 | `night run #12 #14` | [night-run](skills/night-run/SKILL.md) | Unattended. It never stops to ask: it records each decision with its options (screenshots for anything visual) and ends every task at a PR. |
 
 **Proof and review**
@@ -45,6 +46,8 @@ They work in Claude Code, Codex and OpenCode, in any project: desktop apps, webs
 issue → take → build → verify → risk check ── risky? ──→ council ──┐
                                     │                              │
                                     └─────────────→ merge or PR ←──┘ → report
+
+PR → land → review → fix → check the fixes → merge, or hold with the reasons
 ```
 
 ## What they encode
@@ -52,7 +55,7 @@ issue → take → build → verify → risk check ── risky? ──→ counc
 - **Build what was asked.** The issue's acceptance is the whole deliverable. Anything else an agent notices reaches me as one line in its report, not as a diff.
 - **Prove it.** Every acceptance line gets evidence. "Should work" doesn't count, and a check that didn't run is never reported as run.
 - **Make verifying the easy path.** Each project gets its own way to run and drive its app, and a map of what's in it. Agents stop improvising scripts, and a vague bug report turns into a feature they can open and check.
-- **A second opinion where it matters.** Risky changes get a reviewer from a different model family, which sees the diff and the acceptance but not the builder's reasoning. Reviews make a change correct, not bigger. The budget is two rounds.
+- **A second opinion where it matters.** Risky changes get a reviewer from a different model family, which sees the diff and the acceptance but not the builder's reasoning. Reviews make a change correct, not bigger. The budget is two rounds, and a fix for a serious finding never merges until the reviewer has checked it.
 - **Merge what's safe, PR what's risky.** A written rule decides, not the agent's mood: contracts, data, auth, an unresolved review finding or anything unproven always goes to a PR.
 - **Choose by looking.** A visual change comes as real options side by side, with the agent's own pick in one line. I decide by seeing them, not by reading about them.
 - **Never block overnight.** A question asked at 2 a.m. wastes the night. A recorded decision costs me one comment in the morning.
