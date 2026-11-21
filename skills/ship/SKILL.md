@@ -27,7 +27,7 @@ The project's settings win over the defaults below. A project with no `## Ship` 
 Saying ship twice is safe. Work out what is already done and continue from the first unfinished step.
 
 - **Which issue:** `#N` if given. Otherwise the number in the current branch (`task/<N>-…`). Otherwise an open issue assigned to the user that matches the request. Otherwise file a new issue from the request, in the repo's usual shape (outcome, scope, acceptance). The request is the authorization to file it.
-- **How far it got:** assigned to the user with a branch → step 3. Commits that meet the acceptance → step 4. A PR already open → step 6.
+- **How far it got:** check each step's own conditions, in order, and do whatever is missing. Never skip a step because a later one looks done: a branch without the In Progress card is still not taken, and an open PR without its In Review card is still not landed. Reuse what exists (the branch, the PR) rather than creating it again.
 
 ## 2. Take it
 
@@ -37,12 +37,14 @@ Saying ship twice is safe. Work out what is already done and continue from the f
 4. Comment once: `Taking #N | Scope: <paths>`. Set the board card to In Progress.
 5. Acceptance missing or unclear: in an attended chat, ask one question about scope and stop. In a night run, take the smallest reasonable reading and record it as a decision.
 
+The task is taken when all four hold: assigned to the user, on its branch, the `Taking` comment posted, and the card In Progress. Change no files until they do.
+
 ## 3. Build exactly what it asks
 
 - The issue's outcome and acceptance are the whole deliverable. Unspecified details inside them are yours to decide (names, spacing, which helper to reuse). New features are not.
 - Anything else you notice goes in the report's *Noticed* list, one line each. Do not build it, scaffold it, or leave a flag "so it's easy to add later".
 - If the feature cannot work without an extra change, make it and say so in the report. The test is necessity, not improvement.
-- Stay inside the scope paths. Files that another task in progress owns are a blocker.
+- Stay inside the scope paths. When a necessary change needs a file outside them, check the tasks in progress again: if one owns that file, it is a blocker; if none does, make the change and list the file in the report.
 
 ## 4. Prove it
 
@@ -70,7 +72,7 @@ Skip review for copy, docs, styling, and small fixes in one area. Review budget 
 - the user said "ship to PR", or this is a night run
 - it touches an Always PR area, deletes or migrates user data, or changes how auth, permissions or secrets are handled
 - you made a choice the user would want to see (between options, not a detail)
-- the review ended in an open disagreement, or something is unproven
+- the review ended with open findings, or something is unproven
 - the project has no `## Ship` section
 
 Otherwise merge. Say which in one line before landing:
@@ -81,13 +83,13 @@ Otherwise merge. Say which in one line before landing:
 For both paths, commit only this task's files, in the repo's commit style. Fetch before landing. Never force-push, never bypass branch protection, never commit secrets. A conflict, a rejected push or a failing check is a blocker, not something to work around.
 
 **Merge**
-1. If the base moved, merge it into the task branch. Resolve conflicts only in this task's files; any other conflict is a blocker.
+1. If the base moved, merge it into the task branch. Resolve conflicts only in this task's files; any other conflict is a blocker. If you resolved a conflict, or the incoming commits touch files this task changed, rerun the proof those files need before going on.
 2. Push the task branch, then merge with the project's command. Default, which works from any worktree:
    `git switch --detach origin/<base>`, `git merge --no-ff <branch> -m "Merge <branch>: <subject> (#N)"`, `git push origin HEAD:<base>`, `git switch <branch>`.
 3. Close the issue as completed, set the card to Done, and comment `Done #N | Merged: <short sha>`.
 
 **PR**
-1. Push the branch and run `gh pr create`, with this body:
+1. Push the branch. If the branch has no open PR (`gh pr view <branch>`), run `gh pr create` with this body; if it has one, update its body instead:
    ```
    Closes #N
 

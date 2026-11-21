@@ -34,8 +34,8 @@ Use a different model family from your own:
 
 ## 3. Start it
 
-- **Inside Zeralyx** (the environment has `ZERALYX_*` variables, or the `mcp__zeralyx__subagents` tool exists; it may be deferred, so search for it by name first): call that tool, with service, model, thinking and the brief below. Never fall back to a CLI in the shell there. If the tool refuses or fails, stop: the result is `Council: unavailable, <reason>`, and ship lands the change as a PR.
-- **Outside Zeralyx:** write the brief to a temporary file outside the repo, then pipe it on stdin to the reviewer, read-only, from the repo's folder:
+- **Inside Zeralyx**, when your session has Zeralyx's subagents tool: call it, with service, model, thinking and the brief below. Each runtime names it differently: `mcp__zeralyx__subagents` in Claude Code, `subagents` in Codex (`tools.zeralyx__subagents` through exec), `zeralyx_subagents` in OpenCode, `zeralyx__subagents` in Grok. Zeralyx's note in your instructions names it, and it may be deferred, so search for it by name before deciding it is absent. With the tool present, never fall back to a CLI in the shell. If it refuses or fails, stop: the result is `Council: unavailable, <reason>`, and ship lands the change as a PR.
+- **Without that tool** (outside Zeralyx, or a CLI started in a terminal): write the brief to a temporary file outside the repo, then pipe it on stdin to the reviewer, read-only, from the repo's folder:
   - Codex: `codex exec -s read-only -m gpt-6.2-sol -c model_reasoning_effort=medium --ephemeral -o <tmp>/review.md -`
   - Claude: `claude -p --model claude-opus-5-5 --effort medium --permission-mode plan`, with its output saved to `<tmp>/review.md`
 
@@ -82,7 +82,7 @@ A finding that asks for more than the task is *Noted*, never fixed. Re-run the p
 - **Stop early** when the verdict is approve, or only nits and minor findings remain.
 - **Round 2 and later:** send only the new range (`git diff [previous head]..[new head]`), your answers, and the findings still open. The reviewer checks the fixes, accepts each rejection or argues it again with new evidence, and may raise new findings only in the new range.
 
-A finding still disputed when the budget ends is an **open disagreement**: list both sides in one line each. Ship then lands the change as a PR.
+When the budget ends, a blocker or major finding is **open** unless the reviewer confirmed its fix or accepted its rejection. That includes one raised in the last round and fixed afterwards, since no one has checked the fix. List each open finding with both sides in one line each. Any open finding makes ship land the change as a PR.
 
 ## 6. Record
 
@@ -97,4 +97,4 @@ Council: Codex GPT-6.2 Sol (medium) · 2 rounds · 5 findings: 3 fixed, 1 reject
 | F2 | minor | ... | Rejected: ... (evidence) |
 ```
 
-The outcome is one of: **approved**, **approved with notes**, **open disagreement** or **unavailable**.
+The outcome is one of: **approved**, **approved with notes**, **open findings** or **unavailable**.

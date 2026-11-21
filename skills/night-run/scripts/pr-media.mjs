@@ -1,26 +1,31 @@
 #!/usr/bin/env node
-// Uploads images to a `pr-media` branch of the GitHub remote and prints a
-// Markdown image for each, ready to paste into a PR. It builds the commit in a
+// Uploads images to the `pr-media` branch of the GitHub remote and prints a
+// Markdown image for each, ready to paste into a PR. The commit is built in a
 // temporary index, so the checkout, its index and the current branch are never
-// touched. It never force-pushes: a push that loses a race is rebuilt once on
-// the new tip.
+// touched. Links point at the uploaded commit, so a later upload to the same
+// folder can't change an image an earlier PR shows. It only ever pushes to
+// `pr-media`, never force-pushes, and rebuilds once on the new tip when a push
+// loses a race.
 
 import { execFileSync } from 'node:child_process'
 import { mkdtempSync, rmSync, statSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { basename, extname, join } from 'node:path'
 
-const USAGE = 'Usage: node pr-media.mjs --folder <name> [--remote origin] [--branch pr-media] <image>...'
+const BRANCH = 'pr-media'
+const USAGE = 'Usage: node pr-media.mjs --folder <name> [--remote origin] <image>...'
 
 function parse(argv) {
-  const options = { folder: '', remote: 'origin', branch: 'pr-media', files: [] }
+  const options = { folder: '', remote: 'origin', files: [] }
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]
     if (arg === '--help' || arg === '-h') return null
-    if (arg === '--folder' || arg === '--remote' || arg === '--branch') {
+    if (arg === '--folder' || arg === '--remote') {
       const value = argv[++i]
       if (!value) throw new Error(`${arg} needs a value.\n${USAGE}`)
       options[arg.slice(2)] = value
+    } else if (arg.startsWith('--')) {
+      throw new Error(`Unknown option ${arg}.\n${USAGE}`)
     } else {
       options.files.push(arg)
     }
@@ -28,8 +33,12 @@ function parse(argv) {
   options.folder = options.folder.replace(/[^A-Za-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '')
   if (!options.folder) throw new Error(`--folder is required.\n${USAGE}`)
   if (!options.files.length) throw new Error(`Name at least one image.\n${USAGE}`)
+  const names = new Set()
   for (const file of options.files) {
     if (!statSync(file, { throwIfNoEntry: false })?.isFile()) throw new Error(`Not a file: ${file}`)
+    const name = basename(file)
+    if (names.has(name)) throw new Error(`Two images are named ${name}; give each a different name.`)
+    names.add(name)
   }
   return options
 }
@@ -45,22 +54,22 @@ function repoSlug(remote) {
   return `${match[1]}/${match[2]}`
 }
 
-function remoteTip(remote, branch) {
-  const tracking = `refs/remotes/${remote}/${branch}`
+function remoteTip(remote) {
+  const tracking = `refs/remotes/${remote}/${BRANCH}`
   try {
-    git(['fetch', '--quiet', remote, `+refs/heads/${branch}:${tracking}`])
+    git(['fetch', '--quiet', remote, `+refs/heads/${BRANCH}:${tracking}`])
   } catch {
     return null
   }
   return git(['rev-parse', '--verify', '--quiet', tracking]) || null
 }
 
-function upload({ folder, remote, branch, files }) {
+function upload({ folder, remote, files }) {
   const dir = mkdtempSync(join(tmpdir(), 'pr-media-'))
   const env = { ...process.env, GIT_INDEX_FILE: join(dir, 'index') }
   try {
     for (let attempt = 1; ; attempt++) {
-      const parent = remoteTip(remote, branch)
+      const parent = remoteTip(remote)
       git(parent ? ['read-tree', parent] : ['read-tree', '--empty'], env)
       for (const file of files) {
         const blob = git(['hash-object', '-w', '--no-filters', file])
@@ -69,8 +78,8 @@ function upload({ folder, remote, branch, files }) {
       const tree = git(['write-tree'], env)
       const commit = git(['commit-tree', tree, ...(parent ? ['-p', parent] : []), '-m', `media: ${folder}`])
       try {
-        git(['push', '--quiet', remote, `${commit}:refs/heads/${branch}`])
-        return
+        git(['push', '--quiet', remote, `${commit}:refs/heads/${BRANCH}`])
+        return commit
       } catch (error) {
         if (attempt >= 2) throw error
       }
@@ -87,10 +96,10 @@ try {
     process.exit(0)
   }
   const slug = repoSlug(options.remote)
-  upload(options)
+  const commit = upload(options)
   for (const file of options.files) {
     const name = basename(file)
-    const path = [options.branch, options.folder, name].map(encodeURIComponent).join('/')
+    const path = [commit, options.folder, name].map(encodeURIComponent).join('/')
     console.log(`![${basename(name, extname(name))}](https://github.com/${slug}/blob/${path}?raw=true)`)
   }
 } catch (error) {

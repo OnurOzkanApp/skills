@@ -27,7 +27,7 @@ issue → take → build → prove → risk check ──── risky? ──→ 
 - **Build what was asked.** The issue's acceptance is the whole deliverable. Anything else an agent notices reaches me as one line in its report, not as a diff.
 - **Prove it.** Every acceptance line gets evidence: a test that fails without the change, real command output, or the running app. "Should work" doesn't count, and a check that didn't run is never reported as run.
 - **A second opinion where it matters.** Risky changes get a reviewer from a different model family, which sees the diff and the acceptance but not the builder's reasoning. Reviews make a change correct, not bigger. The budget is two rounds.
-- **Merge what's safe, PR what's risky.** A written rule decides, not the agent's mood: contracts, data, auth, an open disagreement or anything unproven always goes to a PR.
+- **Merge what's safe, PR what's risky.** A written rule decides, not the agent's mood: contracts, data, auth, an unresolved review finding or anything unproven always goes to a PR.
 - **Never block overnight.** A question asked at 2 a.m. wastes the night. A recorded decision costs me one comment in the morning.
 - **Fix mistakes at the highest layer.** Agents copy the code they see, so the strongest fix is in the code itself, then a check, then a rule, and only then a skill.
 
