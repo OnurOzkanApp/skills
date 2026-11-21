@@ -13,7 +13,7 @@ Look for a `## Ship` section in the project's `AGENTS.md`, then its `CLAUDE.md`.
 
 - **Repo** and a **board** skill to follow for taking a task, changing its status and closing it
 - **Branch** name and base
-- **Prove**: the check commands and the skill that runs the app
+- **Verify**: the project's verify kit, the skill that runs and drives its app
 - **Always PR**: paths and kinds of change that never merge without the user
 - **Merge** command and **issue comment** forms
 - anything else to do on every change ("when a change adds a screen, update the map")
@@ -26,7 +26,7 @@ The project's settings win over the defaults below. A project with no `## Ship` 
 
 Saying ship twice is safe. Work out what is already done and continue from the first unfinished step.
 
-- **Which issue:** `#N` if given. Otherwise the number in the current branch (`task/<N>-…`). Otherwise an open issue assigned to the user that matches the request. Otherwise file a new issue from the request, in the repo's usual shape (outcome, scope, acceptance). The request is the authorization to file it.
+- **Which issue:** `#N` if given. Otherwise the number in the current branch (`task/<N>-…`). Otherwise an open issue assigned to the user that matches the request. Otherwise file a new issue from the request with the `issue` skill. The request is the authorization to file it.
 - **How far it got:** check each step's own conditions, in order, and do whatever is missing. Never skip a step because a later one looks done: a branch without the In Progress card is still not taken, and an open PR without its In Review card is still not landed. Reuse what exists (the branch, the PR) rather than creating it again.
 
 ## 2. Take it
@@ -48,13 +48,7 @@ The task is taken when these hold: assigned to the user, on its branch, the `Tak
 
 ## 4. Prove it
 
-Evidence, not "this should work". Each acceptance line gets one of:
-
-- a focused test that fails without the change and passes with it
-- the real command's output
-- the running app, through the project's verify skill (screenshots for anything visual)
-
-Run only the checks the acceptance needs, and never say a check ran when it did not. A mock alone does not prove runtime behaviour. Anything you could not prove is listed as *unproven*, and that forces a PR.
+Follow the `verify` skill: every acceptance line gets evidence (a focused test that fails without the change, the real command's output, or the running app through the project's verify kit), and every claim you couldn't check is listed as *unproven*. Run only the checks the acceptance needs. Anything unproven forces a PR.
 
 ## 5. Decide: review, then merge or PR
 
