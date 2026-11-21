@@ -15,7 +15,7 @@ const USAGE = `Usage: node cdp.mjs <command> [arguments] [--port <n>] [--target 
   wait <selector>             Wait until the selector matches a visible element (--timeout ms, default 10000).
   click <selector>            Click the element's centre with real mouse events.
   type <text>                 Type text into the focused element.
-  key <key>                   Press a key or chord: Enter, Escape, Tab, ArrowDown, Ctrl+K, Shift+Tab.
+  key <key>                   Press a key or chord: Enter, Escape, Tab, ArrowDown, Ctrl+K, Shift+Tab, Ctrl+, or F12.
   scroll <selector> <pixels>  Turn the mouse wheel over the element (positive scrolls down).
   shot <file.png>             Screenshot the page; --selector <css> for one element, --width/--height to size the viewport.
   console                     Print console messages and errors for a while (--for ms, default 2000); exits 1 on any error.
@@ -155,11 +155,20 @@ const NAMED_KEYS = {
   ArrowLeft: [37, 'ArrowLeft'], ArrowRight: [39, 'ArrowRight'], Home: [36, 'Home'], End: [35, 'End'],
   PageUp: [33, 'PageUp'], PageDown: [34, 'PageDown'],
 }
+// Punctuation as a US keyboard has it: the character, its shifted character, the key's code and its virtual key.
+const PUNCTUATION = [
+  ['`', '~', 'Backquote', 192], ['-', '_', 'Minus', 189], ['=', '+', 'Equal', 187], ['[', '{', 'BracketLeft', 219],
+  [']', '}', 'BracketRight', 221], ['\\', '|', 'Backslash', 220], [';', ':', 'Semicolon', 186], ["'", '"', 'Quote', 222],
+  [',', '<', 'Comma', 188], ['.', '>', 'Period', 190], ['/', '?', 'Slash', 191],
+]
 const MODIFIERS = { Alt: 1, Ctrl: 2, Control: 2, Meta: 4, Cmd: 4, Shift: 8 }
 
 function parseKey(chord) {
-  const parts = chord.split('+')
-  const name = parts.pop()
+  // A chord ending in "++" presses the + key itself, as does "+" alone.
+  const plus = chord === '+' || chord.endsWith('++')
+  const parts = (plus ? chord.slice(0, -1) : chord).split('+')
+  const name = plus ? (parts.pop(), '+') : parts.pop()
+  if (!name) throw new Error(`${chord} has no key after its modifiers.`)
   let modifiers = 0
   for (const part of parts) {
     if (!MODIFIERS[part]) throw new Error(`Unknown modifier ${part}.`)
@@ -175,7 +184,16 @@ function parseKey(chord) {
     const key = modifiers & MODIFIERS.Shift ? upper : name.toLowerCase()
     return { key, code: /\d/.test(name) ? `Digit${name}` : `Key${upper}`, vk: upper.charCodeAt(0), text: typesText ? key : undefined, modifiers }
   }
-  throw new Error(`Unknown key ${name}. Use a letter, a digit or one of: ${Object.keys(NAMED_KEYS).join(', ')}.`)
+  const mark = PUNCTUATION.find(([plain, shifted]) => name === plain || name === shifted)
+  if (mark) {
+    const [plain, shifted, code, vk] = mark
+    if (name === shifted) modifiers |= MODIFIERS.Shift
+    const key = modifiers & MODIFIERS.Shift ? shifted : plain
+    return { key, code, vk, text: typesText ? key : undefined, modifiers }
+  }
+  const fn = /^F([1-9]|1[0-2])$/.exec(name)
+  if (fn) return { key: name, code: name, vk: 111 + Number(fn[1]), modifiers }
+  throw new Error(`Unknown key ${name}. Use a letter, a digit, punctuation (${PUNCTUATION.map(([plain]) => plain).join(' ')}), F1 to F12 or one of: ${Object.keys(NAMED_KEYS).join(', ')}.`)
 }
 
 const COMMANDS = {
