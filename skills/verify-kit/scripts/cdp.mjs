@@ -23,7 +23,8 @@ const USAGE = `Usage: node cdp.mjs <command> [arguments] [--port <n>] [--target 
   free-port                   Print a free local port to start a browser or app on.
 
 --port is the DevTools port (or set CDP_PORT); there is no default, so you never drive the wrong app.
---target picks the page whose URL or title contains the text; without it, the first page.`
+--target picks the page with that id (from targets), or else the first whose URL or title contains the text; without it,
+the first page.`
 
 const FLAGS = new Set(['port', 'target', 'timeout', 'selector', 'width', 'height', 'for'])
 
@@ -121,8 +122,9 @@ async function pages(port) {
 
 async function openPage(port, match) {
   const all = await pages(port)
-  const page = match ? all.find((target) => target.url.includes(match) || target.title.includes(match)) : all[0]
-  if (!page) throw new Error(match ? `No page's URL or title contains "${match}".` : 'No page is open.')
+  // An id names one page, where two pages can share a URL or a title.
+  const page = match ? all.find((target) => target.id === match) ?? all.find((target) => target.url.includes(match) || target.title.includes(match)) : all[0]
+  if (!page) throw new Error(match ? `No page has the id "${match}" or a URL or title containing it.` : 'No page is open.')
   return Session.open(page.webSocketDebuggerUrl)
 }
 
