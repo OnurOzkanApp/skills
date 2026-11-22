@@ -23,9 +23,12 @@ The user is here, so when the acceptance is unclear, ask. Never decide it yourse
 
 ## Stop and show
 
+Open with one or two plain sentences: what you built, and whether it works. Then:
+
 - **Taken:** #N on `<branch>`
 - **Changed:** each file, with a line on what changed in it
 - **Proof:** what ran and what it showed; what is unproven
+- **Decisions:** each choice you made for the user without asking, one line each, or "none"
 - **Noticed while working, not built:** one line each
 - Last line: `Say "ship" to land it, or tell me what to change.`
 

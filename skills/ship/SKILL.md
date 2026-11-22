@@ -15,6 +15,7 @@ Look for a `## Ship` section in the project's `AGENTS.md`, then its `CLAUDE.md`.
 - **Branch** name and base
 - **Verify**: the project's verify kit, the skill that runs and drives its app
 - **Always PR**: paths and kinds of change that never merge without the user
+- **Council**: who reviews, at what thinking and in which rounds, and the subagents tool that starts them (see the `council` skill)
 - **Merge** command and **issue comment** forms
 - anything else to do on every change ("when a change adds a screen, update the map")
 
@@ -87,12 +88,17 @@ For both paths, commit only this task's files, in the repo's commit style. Fetch
    ```
    Closes #N
 
+   <a short plain paragraph: what was wrong or missing, and what this change does about it>
+
    ## What changed
    ## Proof
    ## Review          (the council footer, or "Council: skipped, <reason>")
-   ## Decisions       (night run only: options, pick, screenshots)
+   ## Decisions       (each choice made without asking the user; a night run adds its options, picks and screenshots)
    ## Noticed while working, not built
+
+   <the model and harness that made it, e.g. "Made with Claude Opus 5.5 in Claude Code"; a harness's own attribution line counts>
    ```
+   Open with the problem, not with a list of files: someone reading only the first paragraph should know why this PR exists. Leave out Decisions when there were none.
 2. Set the card to In Review and comment `Ready #N | PR: <url>`.
 3. If the repo runs checks or review bots on PRs, wait for them to finish. Fix real findings, and answer wrong ones in a reply. Never merge the PR yourself: the user lands it, with `land` or on GitHub.
 
@@ -102,10 +108,11 @@ Issue comments are only those four one-liners. No progress notes, check output o
 
 ## 7. Report
 
-Keep it short, in this order:
+Open with one or two plain sentences: what happened, and what is waiting on the user, if anything. Then, in this order:
 
 - **Landed:** `merged <sha>`, `PR <url>`, or `blocked: <reason>`
 - **Changed:** the files
 - **Proof:** what ran and what it showed; anything unproven
 - **Review:** the council footer, or why it was skipped
+- **Decisions:** each choice you made for the user without asking, one line each, or "none"
 - **Noticed while working, not built:** one line each

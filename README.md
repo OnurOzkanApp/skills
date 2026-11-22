@@ -31,7 +31,7 @@ They work in Claude Code, Codex and OpenCode, in any project: desktop apps, webs
 |---|---|---|
 | `verify` | [verify](skills/verify/SKILL.md) | Evidence for every claim: a test that fails without the change, the real command's output, or the running app driven and screenshotted. What wasn't checked is listed as unproven. |
 | `set up a verify kit` | [verify-kit](skills/verify-kit/SKILL.md) | Builds a project's own verify kit: a small command-line tool that starts and drives the app the same way every time, plus a feature map of what the app does, where it lives and how a user reaches it. Ships a [CDP driver](skills/verify-kit/scripts/cdp.mjs) with no dependencies, for websites and Electron apps. |
-| `council` | [council](skills/council/SKILL.md) | A reviewer from another model family reads the diff against the acceptance. Every finding gets an answer: fixed, rejected with evidence, or noted as out of scope. |
+| `council` | [council](skills/council/SKILL.md) | The project's council, or by default a reviewer from another model family, reads the diff against the acceptance. Every finding gets an answer: fixed, rejected with evidence, or noted as out of scope. |
 | `sweep <area>` | [sweep](skills/sweep/SKILL.md) | Hunts bugs in one area over what changed since its last sweep, proves each one, and files only the proven ones. Git tags remember what was swept. |
 
 **Design, planning and learning**
@@ -84,8 +84,11 @@ The skills read a `## Ship` section in the project's `AGENTS.md` (or `CLAUDE.md`
 - Product: `docs/product.md` (what it is not; where it is going).
 - Always PR: `src/api/schema.ts`, database migrations, anything that deletes user data.
 - Design: options in the `Light` theme only; preview pages link `dist/app.css`.
+- Council: Codex `gpt-6.2-sol` (medium), plus Gemini (high) in round 1. A member someone can't run is skipped.
 - Merge: `--no-ff`, message `Merge <branch>: <subject> (#N)`.
 ```
+
+A setting that is yours alone, like a council of the subscriptions only you have, can go in your own instructions file outside the repo (`~/.codex/AGENTS.md`, `~/.config/opencode/AGENTS.md`, `~/.claude/CLAUDE.md`), where it overrides the project's.
 
 ## Also in my toolbox
 

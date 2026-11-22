@@ -58,8 +58,11 @@ Update the PR body first, whichever it is: Proof with what you proved, Review wi
 
 ## 7. Report
 
+Open with one or two plain sentences: whether it merged, and if not, what is left and whose move it is. Then:
+
 - **Result:** `merged <sha>`, `held: <reason>`, or `your call: <question>`
 - **Review:** the council footer
 - **Fixed:** the commits
 - **Proof:** what ran; what is still unproven
+- **Decisions:** each choice you made for the user without asking, one line each, or "none"
 - **Open:** each open finding, both sides, one line each
